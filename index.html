@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join the Weber State Hiking Club</title>
+  <style>
+    :root{
+      --bg:#EEF2EF; --surface:#FFFFFF; --text:#1B2420; --muted:#46554E;
+      --pine:#3C2A63; --pine-hover:#163A30; --pine-active:#0F2A22;
+      --line:#66756E; --error:#B3261E; --error-bg:#FCEDEC;
+      --ok:#17663A; --focus:#0B57D0; --accent:#9A3F0A;
+      --disabled-bg:#DCE2DE; --disabled-text:#4F5D56;
+    }
+    *{box-sizing:border-box;}
+    html{font-size:100%;}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:1.0625rem/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    }
+    h1,h2{
+      font-family:Georgia,"Times New Roman",serif;
+      line-height:1.2;
+    }
+    .skip{
+      position:absolute;
+      left:8px;
+      top:-60px;
+      background:var(--pine);color:#fff;
+      padding:12px 16px;
+      border-radius:6px;
+      z-index:10;
+    }
+    .skip:focus{
+      top:8px;
+    }
+    header{
+      background:var(--pine);
+      color:#fff;
+      padding:20px 16px 24px;
+    }
+    .wrap{
+      max-width:640px;
+      margin:0 auto;
+    }
+    header h1{
+      margin:0 0 4px;
+      font-size:1.75rem;
+    }
+    header p{
+      margin:0;
+      color:#DDE9E3;
+    }
+
+    /* progress */
+    .steps{
+      display:flex;
+      gap:8px;
+      list-style:none;
+      margin:20px 0 0;
+      padding:0;
+    }
+    .steps li{
+      flex:1;
+      padding:8px 10px;
+      border-top:4px solid #7FA597;
+      font-size:.95rem;
+      color:#DDE9E3;
+    }
+    .steps li[aria-current="step"]{
+      border-color:#fff;
+      color:#fff;
+      font-weight:700;
+    }
+    .steps li.done{border-color:#B7DCC9;}
+    main{padding:24px 16px 48px;}
+    .card{
+      background:var(--surface);
+      border:1px solid #C9D3CE;
+      border-radius:10px;
+      padding:24px;
+    }
+    h2{
+      margin:0 0 16px;
+      font-size:1.5rem;
+    }
+    h2:focus{outline:none;}
+    .field{margin-bottom:20px;}
+    label,legend{
+      display:block;
+      font-weight:700;
+      margin-bottom:6px;
+      padding:0;
+    }
+    .hint{
+      display:block;
+      color:var(--muted);
+      font-size:.95rem;
+      font-weight:400;
+    }
+    input[type=text],input[type=email],select,textarea{
+      width:100%;
+      min-height:48px;
+      padding:10px 12px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      border:2px solid var(--line);
+      border-radius:8px;
+    }
+    textarea{min-height:96px}
+    input:hover,select:hover,textarea:hover{
+      border-color:var(--text);
+    }
+    input[aria-invalid="true"],select[aria-invalid="true"]{
+      border-color:var(--error);
+      background:var(--error-bg);
+    }
+    :focus-visible{
+      outline:3px solid var(--focus);
+      outline-offset:2px;
+    }
+    .err{color:var(--error);
+      font-size:.95rem;
+      font-weight:600;
+      margin-top:6px;
+    }
+    .err:empty{display:none;}
+    .check{display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:6px;
+      min-height:24px;
+      font-size:.95rem;
+      color:var(--muted);
+    }
+    .check.ok{
+      color:var(--ok);
+      font-weight:600;
+    }
+    fieldset{
+      border:0;
+      margin:0 0 20px;
+      padding:0;
+      min-width:0;
+    }
+    .opt{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-height:48px;
+      padding:6px 12px;
+      margin:0 0 8px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      font-weight:400;
+      cursor:pointer;
+      background:#fff;
+    }
+    .opt:hover{
+      border-color:var(--text);
+      background:#F4F7F5;
+    }
+    .opt:active{background:#E3EAE6}
+    .opt:has(input:checked){
+      border-color:var(--pine);
+      background:#E6F0EB;
+    }
+    .opt:has(input:focus-visible){
+      outline:3px solid var(--focus);
+      outline-offset:2px;
+    }
+    .opt input{
+      width:24px;
+      height:24px;
+      margin:0;
+      accent-color:var(--pine);
+      flex:none;
+    }
+    fieldset.bad{
+      border-left:4px solid var(--error);
+      padding-left:12px;
+    }
+    /* buttons */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:48px;
+      min-width:48px;
+      padding:10px 22px;
+      font:inherit;
+      font-weight:700;
+      border-radius:8px;
+      border:2px solid var(--pine);
+      background:var(--pine);
+      color:#fff;
+      cursor:pointer;
+    }
+    .btn:hover{background:var(--pine-hover)}
+    .btn:active{
+      background:var(--pine-active);
+      transform:translateY(1px);
+    }
+    .btn.secondary{
+      background:#fff;
+      color:var(--pine);
+    }
+    .btn.secondary:hover{background:#E6F0EB;}
+    .btn.secondary:active{background:#D3E4DB;}
+    .btn[aria-disabled="true"]{
+      background:var(--disabled-bg);
+      border-color:var(--disabled-bg);
+      color:var(--disabled-text);
+      cursor:not-allowed;
+      transform:none;
+    }
+    .btn.link{
+      border-color:transparent;
+      background:none;
+      color:var(--pine);
+      text-decoration:underline;
+      padding:10px 12px;
+    }
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:24px;
+    }
+    .spinner{
+      width:18px;
+      height:18px;
+      border:3px solid currentColor;
+      border-right-color:transparent;
+      border-radius:50%;animation:spin .8s linear infinite;
+      flex:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toggle{
+      justify-content:flex-start;
+      width:100%;
+      text-align:left;
+    }
+    .toggle .chev{transition:transform .15s;}
+    .toggle[aria-expanded="true"] .chev{transform:rotate(90deg)}
+    #notes-panel{margin-top:8px;}
+    /* summary + alerts */
+    dl{margin:0 0 20px;}
+    .row{display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px solid #D6DED9;
+    }
+    .row dt{font-weight:700}
+    .row dd{
+      margin:0;
+      flex:1;
+      text-align:right;
+      overflow-wrap:anywhere;
+    }
+    .summary{
+      background:var(--error-bg);
+      border:2px solid var(--error);
+      border-radius:8px;
+      padding:14px 16px;
+      margin-bottom:20px;
+    }
+    .summary h3{
+      margin:0 0 6px;
+      font-size:1.05rem;
+      color:var(--error);
+    }
+    .summary ul{
+      margin:0;
+      padding-left:20px;
+    }
+    .summary a{
+      color:var(--error);
+      font-weight:700;
+    }
+    .summary[hidden]{display:none;}
+    .note{
+      color:var(--muted);
+      font-size:.95rem;
+      margin-top:8px;
+    }
+    .demo{
+      margin-top:20px;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+    .success{border-left:6px solid var(--ok);}
+    .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+    @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}.spinner{animation:none;border-right-color:currentColor;opacity:.6}}
+    @media (max-width:480px){.steps li{font-size:.85rem;padding:8px 4px}.row{flex-direction:column;align-items:flex-start}.row dd{text-align:left}}
+    </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to form</a>
+  <header>
+    <div class="wrap">
+      <h1>Join the Weber State Hiking Club</h1>
+      <p>Three quick steps. Dues are collected at the first meeting.</p>
+      <nav aria-label="Registration progress">
+        <ol class="steps" id="steps">
+          <li aria-current="step">1. Your info</li>
+          <li>2. Interests</li>
+          <li>3. Review</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap">
+      <!-- Polite status region: step changes, W# check result -->
+      <div class="vh" id="status" role="status" aria-live="polite" aria-atomic="true"></div>
+
+      <form id="form" novalidate aria-busy="false">
+
+        <!-- STEP 1 -->
+        <section class="card" id="s1" aria-labelledby="h1">
+          <h2 id="h1" tabindex="-1">Your info</h2>
+          <div class="summary" id="sum1" role="alert" hidden tabindex="-1"></div>
+
+          <div class="field">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" autocomplete="name" aria-describedby="name-err" required>
+            <div class="err" id="name-err" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label for="wnum">W number <span class="hint">W followed by 8 digits, like W01234567</span></label>
+            <input type="text" id="wnum" name="wnum" inputmode="text" autocomplete="off" maxlength="9" aria-describedby="w-hint w-check w-err" required>
+            <div class="check" id="w-check" aria-live="polite"></div>
+            <div class="err" id="w-err" aria-live="polite"></div>
+            <span id="w-hint" class="vh">Format: W followed by 8 digits.</span>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" autocomplete="email" aria-describedby="email-err" required>
+            <div class="err" id="email-err" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label for="year">Class year</label>
+            <select id="year" name="year" aria-describedby="year-err" required>
+              <option value="">Choose one</option>
+              <option>Freshman</option><option>Sophomore</option><option>Junior</option>
+              <option>Senior</option><option>Graduate</option><option>Staff or faculty</option>
+            </select>
+            <div class="err" id="year-err" aria-live="polite"></div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn" id="next1">Continue to interests</button>
+          </div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="card" id="s2" aria-labelledby="h2" hidden>
+          <h2 id="h2" tabindex="-1">Interests</h2>
+          <div class="summary" id="sum2" role="alert" hidden tabindex="-1"></div>
+
+          <fieldset id="fs-member" aria-describedby="member-err">
+            <legend>Membership type</legend>
+            <label class="opt"><input type="radio" name="member" value="Casual (free, join any hike)"> Casual: free, join any hike</label>
+            <label class="opt"><input type="radio" name="member" value="Member ($15 per semester)"> Member: $15 per semester, gear loans</label>
+            <label class="opt"><input type="radio" name="member" value="Trip leader ($15 per semester)"> Trip leader: $15 per semester, lead hikes</label>
+            <div class="err" id="member-err" aria-live="polite"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>What do you want to do? <span class="hint">Pick any that apply</span></legend>
+            <label class="opt"><input type="checkbox" name="interest" value="Day hikes"> Day hikes</label>
+            <label class="opt"><input type="checkbox" name="interest" value="Backpacking"> Backpacking</label>
+            <label class="opt"><input type="checkbox" name="interest" value="Snowshoeing"> Snowshoeing</label>
+            <label class="opt"><input type="checkbox" name="interest" value="Trail work"> Trail work days</label>
+          </fieldset>
+
+          <div class="field">
+            <button type="button" class="btn secondary toggle" id="notes-toggle" aria-expanded="false" aria-controls="notes-panel">
+              <span class="chev" aria-hidden="true">&#9656;</span> Dietary or accessibility needs (optional)
+            </button>
+            <div id="notes-panel" hidden>
+              <label for="notes">Tell us what would help <span class="hint">Trip leaders will see this. Leave blank if none.</span></label>
+              <textarea id="notes" name="notes"></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn secondary" id="back2">Back</button>
+            <button type="button" class="btn" id="next2">Continue to review</button>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="card" id="s3" aria-labelledby="h3" hidden>
+          <h2 id="h3" tabindex="-1">Review and join</h2>
+          <div class="summary" id="sum3" role="alert" hidden tabindex="-1"></div>
+
+          <dl id="review"></dl>
+
+          <label class="opt"><input type="checkbox" id="consent" aria-describedby="submit-note">
+            I agree to the club's safety waiver and to share my W number with the club officers.</label>
+
+          <div class="actions">
+            <button type="button" class="btn secondary" id="back3">Back</button>
+            <button type="submit" class="btn" id="submit" aria-disabled="true" aria-describedby="submit-note">Join the club</button>
+          </div>
+          <p class="note" id="submit-note">Check the box above to enable joining.</p>
+        </section>
+
+        <!-- DONE -->
+        <section class="card success" id="done" aria-labelledby="hd" hidden>
+          <h2 id="hd" tabindex="-1">You're in!</h2>
+          <p id="done-msg"></p>
+          <p>Your first hike is Saturday at 8:00 AM, meeting at the Shepherd Union circle.</p>
+          <div class="actions"><button type="button" class="btn secondary" id="restart">Register another person</button></div>
+        </section>
+      </form>
+
+      <p class="demo">Prototype demo: submitting with W00000000 simulates an "already registered" server error. Any other valid W number succeeds.</p>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      const $ = id => document.getElementById(id);
+      const form = $('form'), status = $('status');
+      const secs = ['s1','s2','s3','done'];
+      const stepLis = [...document.querySelectorAll('#steps li')];
+      let current = 1, checking = false, submitting = false, wChecked = '';
+
+      const announce = msg => { status.textContent = ''; setTimeout(() => status.textContent = msg, 50); };
+
+      function go(n, focusHeading = true){
+        current = n;
+        secs.forEach((id, i) => $(id).hidden = (i + 1 !== n));
+        stepLis.forEach((li, i) => {
+          li.classList.toggle('done', i + 1 < n);
+          if (i + 1 === n && n <= 3) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+        });
+        const h = $(['h1','h2','h3','hd'][n - 1]);
+        if (n === 3) buildReview();
+        if (focusHeading) h.focus();
+        window.scrollTo({top: 0});
+        announce(n <= 3 ? `Step ${n} of 3: ${h.textContent}` : 'Registration complete');
+      }
+
+      /* Validation*/
+      const rules = {
+        name:  { el: () => $('name'),  err: 'name-err',  label: 'Full name',  test: v => v.trim().length > 1, msg: 'Enter your full name.' },
+        wnum:  { el: () => $('wnum'),  err: 'w-err',     label: 'W number',   test: v => /^W\d{8}$/i.test(v.trim()), msg: 'Enter W followed by 8 digits, like W01234567.' },
+        email: { el: () => $('email'), err: 'email-err', label: 'Email',      test: v => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v.trim()), msg: 'Enter an email like name@weber.edu.' },
+        year:  { el: () => $('year'),  err: 'year-err',  label: 'Class year', test: v => v !== '', msg: 'Choose your class year.' }
+      };
+
+      function validateField(key){
+        const r = rules[key], el = r.el(), ok = r.test(el.value);
+        $(r.err).textContent = ok ? '' : r.msg;
+        el.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        if (key === 'wnum' && !ok) $('w-check').textContent = '';
+        return ok;
+      }
+
+      function showSummary(id, items){
+        const s = $(id);
+        if (!items.length){ s.hidden = true; s.innerHTML = ''; return; }
+        s.innerHTML = `<h3>${items.length} ${items.length === 1 ? 'problem needs' : 'problems need'} fixing</h3><ul>` +
+          items.map(i => `<li><a href="#${i.target}" data-t="${i.target}">${i.text}</a></li>`).join('') + '</ul>';
+        s.hidden = false; s.focus();
+      }
+      document.addEventListener('click', e => {
+        const a = e.target.closest('.summary a'); if (!a) return;
+        e.preventDefault(); const t = $(a.dataset.t); if (t) t.focus();
+      });
+
+      Object.keys(rules).forEach(k => {
+        rules[k].el().addEventListener('blur', () => {
+          if (k === 'wnum') $('wnum').value = $('wnum').value.toUpperCase();
+          const touched = rules[k].el().value !== '' || rules[k].el().getAttribute('aria-invalid') === 'true';
+          if (touched && validateField(k) && k === 'wnum') checkW();
+        });
+        rules[k].el().addEventListener('input', () => {
+          if (rules[k].el().getAttribute('aria-invalid') === 'true') validateField(k);
+          if (k === 'wnum' && $('wnum').value.toUpperCase() !== wChecked){ $('w-check').textContent = ''; $('w-check').className = 'check'; }
+        });
+      });
+
+      /* W# availability check: latency feedback */
+      function checkW(){
+        const v = $('wnum').value.toUpperCase();
+        if (v === wChecked) return;
+        checking = true;
+        const c = $('w-check'); c.className = 'check';
+        c.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Checking W number…</span>';
+        setTimeout(() => {
+          if ($('wnum').value.toUpperCase() !== v) return;
+          checking = false; wChecked = v;
+          c.className = 'check ok'; c.textContent = 'W number looks good.';
+        }, 1000);
+      }
+
+      $('next1').addEventListener('click', () => {
+        const bad = Object.keys(rules).filter(k => !validateField(k));
+        if (bad.length){
+          showSummary('sum1', bad.map(k => ({ target: rules[k].el().id, text: `${rules[k].label}: ${rules[k].msg}` })));
+          return;
+        }
+        if (checking){ announce('Still checking your W number. Try again in a moment.'); return; }
+        showSummary('sum1', []);
+        go(2);
+      });
+
+      /* step 2 */
+      $('notes-toggle').addEventListener('click', e => {
+        const b = e.currentTarget, open = b.getAttribute('aria-expanded') === 'true';
+        b.setAttribute('aria-expanded', String(!open));
+        $('notes-panel').hidden = open;
+        if (!open) $('notes').focus();
+      });
+      $('back2').addEventListener('click', () => go(1));
+      $('next2').addEventListener('click', () => {
+        const picked = form.querySelector('input[name=member]:checked');
+        $('fs-member').classList.toggle('bad', !picked);
+        $('member-err').textContent = picked ? '' : 'Choose a membership type to continue.';
+        if (!picked){
+          showSummary('sum2', [{ target: form.querySelector('input[name=member]').id || (form.querySelector('input[name=member]').id = 'member-first'), text: 'Membership type: choose one.' }]);
+          return;
+        }
+        showSummary('sum2', []);
+        go(3);
+      });
+      form.addEventListener('change', e => {
+        if (e.target.name === 'member'){ $('fs-member').classList.remove('bad'); $('member-err').textContent = ''; }
+      });
+
+      /* step 3 */
+      function buildReview(){
+        const interests = [...form.querySelectorAll('input[name=interest]:checked')].map(i => i.value).join(', ') || 'None selected';
+        const rows = [
+          ['Name', $('name').value.trim(), 1, 'name'],
+          ['W number', $('wnum').value.trim().toUpperCase(), 1, 'wnum'],
+          ['Email', $('email').value.trim(), 1, 'email'],
+          ['Class year', $('year').value, 1, 'year'],
+          ['Membership', form.querySelector('input[name=member]:checked').value, 2, null],
+          ['Interests', interests, 2, null],
+          ['Needs', $('notes').value.trim() || 'None', 2, null]
+        ];
+        $('review').innerHTML = rows.map(r => `<div class="row"><dt>${r[0]}</dt><dd>${esc(r[1])}</dd>
+          <dd style="flex:none"><button type="button" class="btn link" data-edit="${r[2]}" aria-label="Edit ${r[0]}">Edit</button></dd></div>`).join('');
+      }
+      const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      $('review').addEventListener('click', e => {
+        const b = e.target.closest('[data-edit]'); if (b) go(Number(b.dataset.edit));
+      });
+      $('back3').addEventListener('click', () => go(2));
+
+      const sub = $('submit'), note = $('submit-note');
+      $('consent').addEventListener('change', e => {
+        const on = e.target.checked;
+        sub.setAttribute('aria-disabled', String(!on));
+        note.textContent = on ? 'Ready to join.' : 'Check the box above to enable joining.';
+      });
+
+      /* submit: loading + error + success */
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        if (current !== 3 || sub.getAttribute('aria-disabled') === 'true' || submitting) return;
+        submitting = true;
+        form.setAttribute('aria-busy', 'true');
+        sub.setAttribute('aria-disabled', 'true');
+        sub.innerHTML = '<span class="spinner" aria-hidden="true"></span> Joining…';
+        showSummary('sum3', []);
+        announce('Submitting your registration. Please wait.');
+
+        setTimeout(() => {
+          submitting = false;
+          form.setAttribute('aria-busy', 'false');
+          sub.innerHTML = 'Join the club';
+          if ($('wnum').value.toUpperCase() === 'W00000000'){
+            sub.setAttribute('aria-disabled', 'false');
+            const s = $('sum3');
+            s.innerHTML = `<h3>We couldn't finish your registration</h3>
+              <p style="margin:0 0 10px">W00000000 is already registered. Change your W number and try again, or email hikingclub@example.edu if this is your W number.</p>
+              <button type="button" class="btn secondary" id="fixw">Change W number</button>`;
+            s.hidden = false; s.focus();
+            $('fixw').addEventListener('click', () => { go(1); $('wnum').focus(); $('w-err').textContent = 'This W number is already registered.'; $('wnum').setAttribute('aria-invalid','true'); });
+            return;
+          }
+          $('done-msg').textContent = `Thanks, ${$('name').value.trim().split(' ')[0]}. We sent a confirmation to ${$('email').value.trim()}.`;
+          go(4);
+        }, 1800);
+      });
+
+      $('restart').addEventListener('click', () => {
+        form.reset(); wChecked = '';
+        document.querySelectorAll('.err').forEach(x => x.textContent = '');
+        document.querySelectorAll('[aria-invalid]').forEach(x => x.removeAttribute('aria-invalid'));
+        $('w-check').textContent = ''; $('notes-panel').hidden = true; $('notes-toggle').setAttribute('aria-expanded','false');
+        sub.setAttribute('aria-disabled','true'); note.textContent = 'Check the box above to enable joining.';
+        go(1);
+      });
+    })();
+  </script>
+</body>
+</html>
